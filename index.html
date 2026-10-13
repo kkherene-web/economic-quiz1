@@ -162,7 +162,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7KQ2XBMfdgaJicUvN5-DvZ7mS-ez2bU5Sm1YvcR2xD4i9rxK8bJ5ScZlRFbYFjJiu3g/exec";
+        // الرابط الجديد الخاص بك من الإصدار الرابع (Version 4)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweE6khk08oQNwEyYxTO-zfxv2GGtfMVDaP_hYTc9QsdDVNam8gAMogsIAfHcFymGCAKg/exec";
 
         const questionsData = [
             { id: 1, text: "Economics is about choices when resources are limited.", answer: "True" },
@@ -278,7 +279,6 @@
 
             clearInterval(timerInterval);
 
-            // إظهار جاري الإرسال
             const submitBtn = document.getElementById("submit-btn");
             const submitBtnText = document.getElementById("submit-btn-text");
             submitBtn.disabled = true;
@@ -297,7 +297,6 @@
             const percentage = Math.round((score / totalQuestions) * 100);
             const timeUsed = 180 - Math.max(0, totalSeconds);
 
-            // إرسال البيانات المباشرة
             try {
                 await fetch(SCRIPT_URL, {
                     method: "POST",
