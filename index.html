@@ -192,19 +192,6 @@
         let totalSeconds = 180;
         let isSubmitted = false;
 
-        // التحقق عند فتح الصفحة إذا تم تقديم الاختبار مسبقاً من نفس الجهاز
-        window.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem("quiz_completed") === "true") {
-                document.getElementById("registration-card").innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fa-solid fa-circle-xmark text-red-500 text-5xl mb-4"></i>
-                        <h2 class="text-2xl font-bold text-slate-800">Attempt Already Submitted</h2>
-                        <p class="text-slate-600 text-sm mt-2">You have already completed this assessment. Only one submission is allowed per student.</p>
-                    </div>
-                `;
-            }
-        });
-
         function renderQuestions() {
             const container = document.getElementById("questions-container");
             container.innerHTML = "";
@@ -212,7 +199,6 @@
             questionsData.forEach((q, index) => {
                 const qCard = document.createElement("div");
                 qCard.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm";
-                // أزيلت خانة required لجعل الإجابة اختيارية
                 qCard.innerHTML = `
                     <div class="flex items-start space-x-3 mb-3">
                         <span class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">Q${index + 1}</span>
@@ -240,4 +226,146 @@
                 firstName: document.getElementById("first-name").value.trim(),
                 lastName: document.getElementById("last-name").value.trim(),
                 email: document.getElementById("student-email").value.trim(),
-                group: document.getElementById("student
+                group: document.getElementById("student-group").value
+            };
+
+            document.getElementById("display-student-name").textContent = `${studentDetails.firstName} ${studentDetails.lastName}`;
+            document.getElementById("display-student-group").textContent = studentDetails.group;
+
+            document.getElementById("registration-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.remove("hidden");
+            
+            renderQuestions();
+            document.getElementById("quiz-card").classList.remove("hidden");
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            const timeDisplay = document.getElementById("time-display");
+            const timerBadge = document.getElementById("timer-badge");
+
+            timerInterval = setInterval(() => {
+                totalSeconds--;
+
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timeDisplay.textContent = `${minutes}:${seconds}`;
+
+                if (totalSeconds <= 60) {
+                    timerBadge.classList.remove("bg-red-50", "text-red-700");
+                    timerBadge.classList.add("bg-red-600", "text-white", "animate-pulse");
+                }
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ Time is up! Your quiz is automatically being submitted.");
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        async function submitQuiz(e) {
+            if (e) e.preventDefault();
+            if (isSubmitted) return;
+            isSubmitted = true;
+
+            clearInterval(timerInterval);
+
+            const submitBtn = document.getElementById("submit-btn");
+            const submitBtnText = document.getElementById("submit-btn-text");
+            submitBtn.disabled = true;
+            submitBtnText.textContent = "Submitting Data...";
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unsubmittedCount = 0;
+            const totalQuestions = questionsData.length;
+
+            questionsData.forEach((q) => {
+                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                if (selected) {
+                    if (selected.value === q.answer) {
+                        correctCount++;
+                    } else {
+                        incorrectCount++;
+                    }
+                } else {
+                    unsubmittedCount++;
+                }
+            });
+
+            // حساب النتيجة النظيفة
+            let netScore = correctCount - incorrectCount;
+            if (netScore < 0) netScore = 0;
+
+            const percentage = Math.round((netScore / totalQuestions) * 100);
+            const timeUsed = 180 - Math.max(0, totalSeconds);
+
+            // إرسال البيانات المباشرة بدون عوائق
+            try {
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        firstName: studentDetails.firstName,
+                        lastName: studentDetails.lastName,
+                        email: studentDetails.email,
+                        group: studentDetails.group,
+                        score: netScore + " / " + totalQuestions,
+                        percentage: percentage + "%",
+                        timeUsed: timeUsed + " seconds"
+                    })
+                });
+            } catch (err) {
+                console.error("Error submitting data:", err);
+            }
+
+            document.getElementById("quiz-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.add("hidden");
+            document.getElementById("results-card").classList.remove("hidden");
+
+            document.getElementById("score-text").textContent = `${netScore} / ${totalQuestions}`;
+            document.getElementById("percentage-text").textContent = `Score Percentage: ${percentage}%`;
+            document.getElementById("result-student-info").textContent = `Student: ${studentDetails.firstName} ${studentDetails.lastName} (${studentDetails.group}) • ${studentDetails.email}`;
+
+            const iconContainer = document.getElementById("result-icon-container");
+            const statusTitle = document.getElementById("result-status");
+
+            if (percentage >= 50) {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-trophy text-3xl"></i>`;
+                statusTitle.textContent = "Congratulations! You Passed";
+            } else {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-red-100 text-red-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-3xl"></i>`;
+                statusTitle.textContent = "Keep Practicing!";
+            }
+
+            const resultDetails = document.getElementById("result-details");
+            resultDetails.innerHTML = `
+                <div class="flex justify-between"><strong>First Name:</strong> <span>${studentDetails.firstName}</span></div>
+                <div class="flex justify-between"><strong>Last Name:</strong> <span>${studentDetails.lastName}</span></div>
+                <div class="flex justify-between"><strong>Email:</strong> <span>${studentDetails.email}</span></div>
+                <div class="flex justify-between"><strong>Group:</strong> <span>${studentDetails.group}</span></div>
+                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Correct Answers (+1):</strong> <span class="text-emerald-600 font-bold">${correctCount}</span></div>
+                <div class="flex justify-between"><strong>Incorrect Answers (-1):</strong> <span class="text-red-600 font-bold">${incorrectCount}</span></div>
+                <div class="flex justify-between"><strong>Unanswered (0):</strong> <span class="text-slate-500 font-bold">${unsubmittedCount}</span></div>
+                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Final Net Score:</strong> <span class="font-bold text-blue-600">${netScore} / ${totalQuestions}</span></div>
+                <div class="flex justify-between"><strong>Time Used:</strong> <span>${timeUsed} seconds</span></div>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
