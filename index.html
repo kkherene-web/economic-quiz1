@@ -168,6 +168,9 @@
     </div>
 
     <script>
+        // ربط رابط Google Apps Script الخاص بك هنا
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTKncDQ1rKv2g_TDXjC9RqsMjiliyUx0Bmnk3SNjgIHq_4X6-Ym64xklYsZBYgDf0/exec";
+
         // 20 True/False Questions dataset aligned with A1/A2 level syllabus
         const questionsData = [
             { id: 1, text: "Economics is about choices when resources are limited.", answer: "True" },
@@ -228,7 +231,6 @@
         function startQuiz(e) {
             e.preventDefault();
 
-            // Store student details
             studentDetails = {
                 firstName: document.getElementById("first-name").value.trim(),
                 lastName: document.getElementById("last-name").value.trim(),
@@ -236,21 +238,17 @@
                 group: document.getElementById("student-group").value
             };
 
-            // Update Header Display
             document.getElementById("display-student-name").textContent = `${studentDetails.firstName} ${studentDetails.lastName}`;
             document.getElementById("display-student-group").textContent = studentDetails.group;
 
-            // UI Transitions
             document.getElementById("registration-card").classList.add("hidden");
             document.getElementById("sticky-header").classList.remove("hidden");
             
             renderQuestions();
             document.getElementById("quiz-card").classList.remove("hidden");
 
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Start Countdown Timer
             startTimer();
         }
 
@@ -269,7 +267,6 @@
 
                 timeDisplay.textContent = `${minutes}:${seconds}`;
 
-                // Warning colors when under 1 minute
                 if (totalSeconds <= 60) {
                     timerBadge.classList.remove("bg-red-50", "text-red-700");
                     timerBadge.classList.add("bg-red-600", "text-white", "animate-pulse");
@@ -290,7 +287,6 @@
 
             clearInterval(timerInterval);
 
-            // Calculate Score
             let score = 0;
             const totalQuestions = questionsData.length;
 
@@ -302,13 +298,29 @@
             });
 
             const percentage = Math.round((score / totalQuestions) * 100);
+            const timeUsed = 180 - Math.max(0, totalSeconds);
 
-            // Hide Quiz, Show Results
+            // إرسال البيانات تلقائياً إلى Google Sheet عبر Web App
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    firstName: studentDetails.firstName,
+                    lastName: studentDetails.lastName,
+                    email: studentDetails.email,
+                    group: studentDetails.group,
+                    score: score + " / " + totalQuestions,
+                    percentage: percentage,
+                    timeUsed: timeUsed + " seconds"
+                })
+            }).catch(err => console.error("Error submitting data:", err));
+
+            // إخفاء الاختبار وعرض النتائج للطالب
             document.getElementById("quiz-card").classList.add("hidden");
             document.getElementById("sticky-header").classList.add("hidden");
             document.getElementById("results-card").classList.remove("hidden");
 
-            // Update Result Display
             document.getElementById("score-text").textContent = `${score} / ${totalQuestions}`;
             document.getElementById("percentage-text").textContent = `Score Percentage: ${percentage}%`;
             document.getElementById("result-student-info").textContent = `Student: ${studentDetails.firstName} ${studentDetails.lastName} (${studentDetails.group}) • ${studentDetails.email}`;
@@ -326,14 +338,13 @@
                 statusTitle.textContent = "Keep Practicing!";
             }
 
-            // Breakdown
             const resultDetails = document.getElementById("result-details");
             resultDetails.innerHTML = `
                 <div class="flex justify-between"><strong>First Name:</strong> <span>${studentDetails.firstName}</span></div>
                 <div class="flex justify-between"><strong>Last Name:</strong> <span>${studentDetails.lastName}</span></div>
                 <div class="flex justify-between"><strong>Email:</strong> <span>${studentDetails.email}</span></div>
                 <div class="flex justify-between"><strong>Group:</strong> <span>${studentDetails.group}</span></div>
-                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Time Used:</strong> <span>${180 - Math.max(0, totalSeconds)} seconds</span></div>
+                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Time Used:</strong> <span>${timeUsed} seconds</span></div>
             `;
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
