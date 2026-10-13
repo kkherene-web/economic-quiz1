@@ -106,7 +106,7 @@
                         <div class="text-xs text-amber-800 space-y-1">
                             <p class="font-bold">Instructions &amp; Rules:</p>
                             <p>• You have <strong>3 minutes (180 seconds)</strong> to complete 20 True/False questions.</p>
-                            <p>• <strong>Marking:</strong> Correct +1, Incorrect -1, Unanswered 0.</p>
+                            <p>• <strong>Marking System:</strong> Correct +1, Incorrect -1, Unanswered 0.</p>
                             <p>• Answering all questions is optional.</p>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
             <p id="result-student-info" class="text-slate-500 text-sm mb-6">Submitted by Student</p>
 
             <div class="bg-slate-50 rounded-xl border border-slate-100 p-6 mb-6 max-w-sm mx-auto">
-                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Score</span>
+                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Net Score</span>
                 <div class="text-4xl font-extrabold text-blue-600 mt-1 mb-2" id="score-text">0 / 20</div>
                 <div class="text-sm font-semibold text-slate-600" id="percentage-text">0%</div>
             </div>
@@ -163,7 +163,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg9v3sM2n6-9IK7pjgavgmusm2yQepWcSuDu1WY9sCS89ahPQ1ycM5OrgNNq2StGpNaw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwy4KwTk6FaahSJFc5kjIa8iDthiOCcEDUvFz5rv5D_emlG9Ij6cLIIhoz8MSUjJ5DHxA/exec";
 
         const questionsData = [
             { id: 1, text: "Economics is about choices when resources are limited.", answer: "True" },
@@ -312,6 +312,7 @@
                 }
             });
 
+            // Net Score Calculation: Correct (+1), Incorrect (-1), Unanswered (0)
             let netScore = correctCount - incorrectCount;
             if (netScore < 0) netScore = 0;
 
@@ -332,6 +333,7 @@
                 await fetch(SCRIPT_URL, {
                     method: "POST",
                     mode: "no-cors",
+                    cache: "no-cache",
                     headers: {
                         "Content-Type": "text/plain;charset=utf-8"
                     },
