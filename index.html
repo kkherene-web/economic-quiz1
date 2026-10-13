@@ -151,4 +151,201 @@
             <!-- Score Display -->
             <div class="bg-slate-50 rounded-xl border border-slate-100 p-6 mb-6 max-w-sm mx-auto">
                 <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Score</span>
-                <div class="text-4xl font-extrabold text-blue-60
+                <div class="text-4xl font-extrabold text-blue-600 mt-1 mb-2" id="score-text">0 / 20</div>
+                <div class="text-sm font-semibold text-slate-600" id="percentage-text">0%</div>
+            </div>
+
+            <!-- Detailed Breakdown -->
+            <div id="result-details" class="text-left bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2 mb-6">
+                <!-- Data populated by JS -->
+            </div>
+
+            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold py-2.5 px-5 rounded-lg shadow inline-flex items-center space-x-2">
+                <i class="fa-solid fa-print"></i>
+                <span>Print or Save Result</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7KQ2XBMfdgaJicUvN5-DvZ7mS-ez2bU5Sm1YvcR2xD4i9rxK8bJ5ScZlRFbYFjJiu3g/exec";
+
+        const questionsData = [
+            { id: 1, text: "Economics is about choices when resources are limited.", answer: "True" },
+            { id: 2, text: "Economy and economics mean exactly the same thing.", answer: "False" },
+            { id: 3, text: "'Economic' is an adjective.", answer: "True" },
+            { id: 4, text: "Microeconomics studies the economy as a whole.", answer: "False" },
+            { id: 5, text: "Macroeconomics looks at inflation and unemployment.", answer: "True" },
+            { id: 6, text: "The Algerian economy is considered a developing economy.", answer: "True" },
+            { id: 7, text: "Scarcity means that resources are unlimited.", answer: "False" },
+            { id: 8, text: "A consumer buys food and goods from a shop.", answer: "True" },
+            { id: 9, text: "A producer makes goods or provides services for consumers.", answer: "True" },
+            { id: 10, text: "Economics, business, and management are exactly the same field.", answer: "False" },
+            { id: 11, text: "English helps you communicate with business partners from other countries.", answer: "True" },
+            { id: 12, text: "Scarcity means that society can have everything it wants for free.", answer: "False" },
+            { id: 13, text: "Microeconomics looks at individual markets and individual consumers.", answer: "True" },
+            { id: 14, text: "Resources are things that people, businesses, or countries can use.", answer: "True" },
+            { id: 15, text: "A consumer is a person who manufactures industrial goods.", answer: "False" },
+            { id: 16, text: "Producers can be individuals, private companies, or government enterprises.", answer: "True" },
+            { id: 17, text: "English is only a general school subject, not a practical tool for economics.", answer: "False" },
+            { id: 18, text: "Economics studies how resources are allocated and used.", answer: "True" },
+            { id: 19, text: "Business management focuses on organizing people and resources within an organization.", answer: "True" },
+            { id: 20, text: "Management is strictly limited to producing agricultural products.", answer: "False" }
+        ];
+
+        let studentDetails = {};
+        let timerInterval = null;
+        let totalSeconds = 180;
+        let isSubmitted = false;
+
+        function renderQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+
+            questionsData.forEach((q, index) => {
+                const qCard = document.createElement("div");
+                qCard.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm";
+                qCard.innerHTML = `
+                    <div class="flex items-start space-x-3 mb-3">
+                        <span class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">Q${index + 1}</span>
+                        <p class="font-medium text-slate-800 text-sm md:text-base">${q.text}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
+                            <input type="radio" name="q_${q.id}" value="True" required class="accent-blue-600 h-4 w-4">
+                            <span class="text-sm font-medium text-slate-700">True</span>
+                        </label>
+                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
+                            <input type="radio" name="q_${q.id}" value="False" required class="accent-blue-600 h-4 w-4">
+                            <span class="text-sm font-medium text-slate-700">False</span>
+                        </label>
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+        }
+
+        function startQuiz(e) {
+            e.preventDefault();
+
+            studentDetails = {
+                firstName: document.getElementById("first-name").value.trim(),
+                lastName: document.getElementById("last-name").value.trim(),
+                email: document.getElementById("student-email").value.trim(),
+                group: document.getElementById("student-group").value
+            };
+
+            document.getElementById("display-student-name").textContent = `${studentDetails.firstName} ${studentDetails.lastName}`;
+            document.getElementById("display-student-group").textContent = studentDetails.group;
+
+            document.getElementById("registration-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.remove("hidden");
+            
+            renderQuestions();
+            document.getElementById("quiz-card").classList.remove("hidden");
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            const timeDisplay = document.getElementById("time-display");
+            const timerBadge = document.getElementById("timer-badge");
+
+            timerInterval = setInterval(() => {
+                totalSeconds--;
+
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timeDisplay.textContent = `${minutes}:${seconds}`;
+
+                if (totalSeconds <= 60) {
+                    timerBadge.classList.remove("bg-red-50", "text-red-700");
+                    timerBadge.classList.add("bg-red-600", "text-white", "animate-pulse");
+                }
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ Time is up! Your quiz is automatically being submitted.");
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function submitQuiz(e) {
+            if (e) e.preventDefault();
+            if (isSubmitted) return;
+            isSubmitted = true;
+
+            clearInterval(timerInterval);
+
+            let score = 0;
+            const totalQuestions = questionsData.length;
+
+            questionsData.forEach((q) => {
+                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                if (selected && selected.value === q.answer) {
+                    score++;
+                }
+            });
+
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const timeUsed = 180 - Math.max(0, totalSeconds);
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify({
+                    firstName: studentDetails.firstName,
+                    lastName: studentDetails.lastName,
+                    email: studentDetails.email,
+                    group: studentDetails.group,
+                    score: score + " / " + totalQuestions,
+                    percentage: percentage + "%",
+                    timeUsed: timeUsed + " seconds"
+                })
+            }).catch(err => console.error("Error submitting data:", err));
+
+            document.getElementById("quiz-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.add("hidden");
+            document.getElementById("results-card").classList.remove("hidden");
+
+            document.getElementById("score-text").textContent = `${score} / ${totalQuestions}`;
+            document.getElementById("percentage-text").textContent = `Score Percentage: ${percentage}%`;
+            document.getElementById("result-student-info").textContent = `Student: ${studentDetails.firstName} ${studentDetails.lastName} (${studentDetails.group}) • ${studentDetails.email}`;
+
+            const iconContainer = document.getElementById("result-icon-container");
+            const statusTitle = document.getElementById("result-status");
+
+            if (percentage >= 50) {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-trophy text-3xl"></i>`;
+                statusTitle.textContent = "Congratulations! You Passed";
+            } else {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-red-100 text-red-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-3xl"></i>`;
+                statusTitle.textContent = "Keep Practicing!";
+            }
+
+            const resultDetails = document.getElementById("result-details");
+            resultDetails.innerHTML = `
+                <div class="flex justify-between"><strong>First Name:</strong> <span>${studentDetails.firstName}</span></div>
+                <div class="flex justify-between"><strong>Last Name:</strong> <span>${studentDetails.lastName}</span></div>
+                <div class="flex justify-between"><strong>Email:</strong> <span>${studentDetails.email}</span></div>
+                <div class="flex justify-between"><strong>Group:</strong> <span>${studentDetails.group}</span></div>
+                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Time Used:</strong> <span>${timeUsed} seconds</span></div>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
