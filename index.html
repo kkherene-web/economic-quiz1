@@ -163,7 +163,6 @@
     </div>
 
     <script>
-        // Web App Deployment URL (Version 5)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwg9v3sM2n6-9IK7pjgavgmusm2yQepWcSuDu1WY9sCS89ahPQ1ycM5OrgNNq2StGpNaw/exec";
 
         const questionsData = [
@@ -194,16 +193,14 @@
         let totalSeconds = 180;
         let isSubmitted = false;
 
-        // Verify if submission already made on this device
-        window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("DOMContentLoaded", function() {
             if (localStorage.getItem("quiz_completed") === "true") {
-                document.getElementById("registration-card").innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fa-solid fa-circle-xmark text-red-500 text-5xl mb-4"></i>
-                        <h2 class="text-2xl font-bold text-slate-800">Attempt Already Submitted</h2>
-                        <p class="text-slate-600 text-sm mt-2">You have already completed this assessment. Only one submission is allowed per student.</p>
-                    </div>
-                `;
+                document.getElementById("registration-card").innerHTML = 
+                    '<div class="text-center py-8">' +
+                        '<i class="fa-solid fa-circle-xmark text-red-500 text-5xl mb-4"></i>' +
+                        '<h2 class="text-2xl font-bold text-slate-800">Attempt Already Submitted</h2>' +
+                        '<p class="text-slate-600 text-sm mt-2">You have already completed this assessment. Only one submission is allowed per student.</p>' +
+                    '</div>';
             }
         });
 
@@ -211,25 +208,24 @@
             const container = document.getElementById("questions-container");
             container.innerHTML = "";
 
-            questionsData.forEach((q, index) => {
+            questionsData.forEach(function(q, index) {
                 const qCard = document.createElement("div");
                 qCard.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm";
-                qCard.innerHTML = `
-                    <div class="flex items-start space-x-3 mb-3">
-                        <span class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">Q${index + 1}</span>
-                        <p class="font-medium text-slate-800 text-sm md:text-base">${q.text}</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mt-3">
-                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
-                            <input type="radio" name="q_${q.id}" value="True" class="accent-blue-600 h-4 w-4">
-                            <span class="text-sm font-medium text-slate-700">True</span>
-                        </label>
-                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
-                            <input type="radio" name="q_${q.id}" value="False" class="accent-blue-600 h-4 w-4">
-                            <span class="text-sm font-medium text-slate-700">False</span>
-                        </label>
-                    </div>
-                `;
+                qCard.innerHTML = 
+                    '<div class="flex items-start space-x-3 mb-3">' +
+                        '<span class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">Q' + (index + 1) + '</span>' +
+                        '<p class="font-medium text-slate-800 text-sm md:text-base">' + q.text + '</p>' +
+                    '</div>' +
+                    '<div class="grid grid-cols-2 gap-3 mt-3">' +
+                        '<label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">' +
+                            '<input type="radio" name="q_' + q.id + '" value="True" class="accent-blue-600 h-4 w-4">' +
+                            '<span class="text-sm font-medium text-slate-700">True</span>' +
+                        '</label>' +
+                        '<label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">' +
+                            '<input type="radio" name="q_' + q.id + '" value="False" class="accent-blue-600 h-4 w-4">' +
+                            '<span class="text-sm font-medium text-slate-700">False</span>' +
+                        '</label>' +
+                    '</div>';
                 container.appendChild(qCard);
             });
         }
@@ -244,7 +240,7 @@
                 group: document.getElementById("student-group").value
             };
 
-            document.getElementById("display-student-name").textContent = `${studentDetails.firstName} ${studentDetails.lastName}`;
+            document.getElementById("display-student-name").textContent = studentDetails.firstName + " " + studentDetails.lastName;
             document.getElementById("display-student-group").textContent = studentDetails.group;
 
             document.getElementById("registration-card").classList.add("hidden");
@@ -262,7 +258,7 @@
             const timeDisplay = document.getElementById("time-display");
             const timerBadge = document.getElementById("timer-badge");
 
-            timerInterval = setInterval(() => {
+            timerInterval = setInterval(function() {
                 totalSeconds--;
 
                 let minutes = Math.floor(totalSeconds / 60);
@@ -271,7 +267,7 @@
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                timeDisplay.textContent = `${minutes}:${seconds}`;
+                timeDisplay.textContent = minutes + ":" + seconds;
 
                 if (totalSeconds <= 60) {
                     timerBadge.classList.remove("bg-red-50", "text-red-700");
@@ -303,8 +299,8 @@
             let unsubmittedCount = 0;
             const totalQuestions = questionsData.length;
 
-            questionsData.forEach((q) => {
-                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+            questionsData.forEach(function(q) {
+                const selected = document.querySelector('input[name="q_' + q.id + '"]:checked');
                 if (selected) {
                     if (selected.value === q.answer) {
                         correctCount++;
@@ -316,7 +312,6 @@
                 }
             });
 
-            // Calculate Net Score: Correct - Incorrect, minimum 0
             let netScore = correctCount - incorrectCount;
             if (netScore < 0) netScore = 0;
 
@@ -356,35 +351,34 @@
             document.getElementById("sticky-header").classList.add("hidden");
             document.getElementById("results-card").classList.remove("hidden");
 
-            document.getElementById("score-text").textContent = `${netScore} / ${totalQuestions}`;
-            document.getElementById("percentage-text").textContent = `Score Percentage: ${percentage}%`;
-            document.getElementById("result-student-info").textContent = `Student: ${studentDetails.firstName} ${studentDetails.lastName} (${studentDetails.group}) • ${studentDetails.email}`;
+            document.getElementById("score-text").textContent = netScore + " / " + totalQuestions;
+            document.getElementById("percentage-text").textContent = "Score Percentage: " + percentage + "%";
+            document.getElementById("result-student-info").textContent = "Student: " + studentDetails.firstName + " " + studentDetails.lastName + " (" + studentDetails.group + ") • " + studentDetails.email;
 
             const iconContainer = document.getElementById("result-icon-container");
             const statusTitle = document.getElementById("result-status");
 
             if (percentage >= 50) {
                 iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600";
-                iconContainer.innerHTML = `<i class="fa-solid fa-trophy text-3xl"></i>`;
+                iconContainer.innerHTML = '<i class="fa-solid fa-trophy text-3xl"></i>';
                 statusTitle.textContent = "Congratulations! You Passed";
             } else {
                 iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-red-100 text-red-600";
-                iconContainer.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-3xl"></i>`;
+                iconContainer.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-3xl"></i>';
                 statusTitle.textContent = "Keep Practicing!";
             }
 
             const resultDetails = document.getElementById("result-details");
-            resultDetails.innerHTML = `
-                <div class="flex justify-between"><strong>First Name:</strong> <span>${studentDetails.firstName}</span></div>
-                <div class="flex justify-between"><strong>Last Name:</strong> <span>${studentDetails.lastName}</span></div>
-                <div class="flex justify-between"><strong>Email:</strong> <span>${studentDetails.email}</span></div>
-                <div class="flex justify-between"><strong>Group:</strong> <span>${studentDetails.group}</span></div>
-                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Correct Answers (+1):</strong> <span class="text-emerald-600 font-bold">${correctCount}</span></div>
-                <div class="flex justify-between"><strong>Incorrect Answers (-1):</strong> <span class="text-red-600 font-bold">${incorrectCount}</span></div>
-                <div class="flex justify-between"><strong>Unanswered (0):</strong> <span class="text-slate-500 font-bold">${unsubmittedCount}</span></div>
-                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Final Net Score:</strong> <span class="font-bold text-blue-600">${netScore} / ${totalQuestions}</span></div>
-                <div class="flex justify-between"><strong>Time Used:</strong> <span>${timeUsed} seconds</span></div>
-            `;
+            resultDetails.innerHTML = 
+                '<div class="flex justify-between"><strong>First Name:</strong> <span>' + studentDetails.firstName + '</span></div>' +
+                '<div class="flex justify-between"><strong>Last Name:</strong> <span>' + studentDetails.lastName + '</span></div>' +
+                '<div class="flex justify-between"><strong>Email:</strong> <span>' + studentDetails.email + '</span></div>' +
+                '<div class="flex justify-between"><strong>Group:</strong> <span>' + studentDetails.group + '</span></div>' +
+                '<div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Correct Answers (+1):</strong> <span class="text-emerald-600 font-bold">' + correctCount + '</span></div>' +
+                '<div class="flex justify-between"><strong>Incorrect Answers (-1):</strong> <span class="text-red-600 font-bold">' + incorrectCount + '</span></div>' +
+                '<div class="flex justify-between"><strong>Unanswered (0):</strong> <span class="text-slate-500 font-bold">' + unsubmittedCount + '</span></div>' +
+                '<div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Final Net Score:</strong> <span class="font-bold text-blue-600">' + netScore + ' / ' + totalQuestions + '</span></div>' +
+                '<div class="flex justify-between"><strong>Time Used:</strong> <span>' + timeUsed + ' seconds</span></div>';
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
