@@ -1,5 +1,5 @@
 
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen pb-12">
+<body class="text-slate-800 min-h-screen pb-12 pt-6">
 
     <!-- Top Banner & Sticky Bar -->
     <div id="sticky-header" class="sticky-timer bg-white/90 border-b border-slate-200 shadow-sm py-3 px-4 mb-6 hidden">
@@ -76,5 +76,79 @@
             <form id="student-form" onsubmit="startQuiz(event)" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">First Name / الاسم</label>
-                        <input type="text" id 
+                        <label for="first-name" class="block text-xs font-bold text-slate-700 uppercase mb-1">First Name / الاسم</label>
+                        <input type="text" id="first-name" required placeholder="e.g. Mohamed" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-xs font-bold text-slate-700 uppercase mb-1">Last Name / اللقب</label>
+                        <input type="text" id="last-name" required placeholder="e.g. Benali" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="student-email" class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address / البريد الإلكتروني</label>
+                    <input type="email" id="student-email" required placeholder="student@univ-boumerdes.dz" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+
+                <div>
+                    <label for="student-group" class="block text-xs font-bold text-slate-700 uppercase mb-1">Group / الفوج</label>
+                    <select id="student-group" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white">
+                        <option value="" disabled selected>Select your Group...</option>
+                        <option value="G06">Group 06 (G06)</option>
+                        <option value="G07">Group 07 (G07)</option>
+                        <option value="G08">Group 08 (G08)</option>
+                        <option value="G09">Group 09 (G09)</option>
+                        <option value="G10">Group 10 (G10)</option>
+                    </select>
+                </div>
+
+                <!-- Instructions Alert Box -->
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mt-6">
+                    <div class="flex">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mr-3 mt-0.5"></i>
+                        <div class="text-xs text-amber-800 space-y-1">
+                            <p class="font-bold">Instructions &amp; Rules:</p>
+                            <p>• You have <strong>3 minutes (180 seconds)</strong> to complete 20 True/False questions.</p>
+                            <p>• The quiz will automatically submit when time expires!</p>
+                            <p>• Make sure to choose an answer for every question.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base mt-6">
+                    <span>Start Timed Quiz Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: QUIZ SECTION (HIDDEN BY DEFAULT) -->
+        <div id="quiz-card" class="hidden space-y-6">
+            <form id="quiz-form" onsubmit="submitQuiz(event)">
+                <div id="questions-container" class="space-y-4">
+                    <!-- Dynamic Questions Loaded Here -->
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit Answers</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 3: RESULTS CARD (HIDDEN BY DEFAULT) -->
+        <div id="results-card" class="hidden bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-md text-center">
+            <div id="result-icon-container" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                <!-- Icon inserted via JS -->
+            </div>
+
+            <h2 id="result-status" class="text-2xl font-bold text-slate-800 mb-1">Quiz Completed!</h2>
+            <p id="result-student-info" class="text-slate-500 text-sm mb-6">Submitted by Student</p>
+
+            <!-- Score Display -->
+            <div class="bg-slate-50 rounded-xl border border-slate-100 p-6 mb-6 max-w-sm mx-auto">
+                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Score</span>
+                <div class="text-4xl font-extrabold text-blue-60
