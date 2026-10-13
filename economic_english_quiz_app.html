@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Economic English - 3-Minute Quiz</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        /* Custom radio button animations */
+        .quiz-option {
+            transition: all 0.2s ease;
+        }
+        .quiz-option:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .quiz-option input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+        /* Sticky Timer Bar */
+        .sticky-timer {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen pb-12">
+
+    <!-- Top Banner & Sticky Bar -->
+    <div id="sticky-header" class="sticky-timer bg-white/90 border-b border-slate-200 shadow-sm py-3 px-4 mb-6 hidden">
+        <div class="max-w-3xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Student:</span>
+                <span id="display-student-name" class="text-sm font-bold text-slate-800">---</span>
+                <span id="display-student-group" class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">---</span>
+            </div>
+            <!-- Timer Badge -->
+            <div id="timer-badge" class="flex items-center space-x-2 bg-red-50 text-red-700 px-3 py-1.5 rounded-full border border-red-200 font-mono font-bold text-base shadow-sm">
+                <i class="fa-solid fa-clock animate-pulse text-red-600"></i>
+                <span id="time-display">03:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-3xl mx-auto px-4">
+
+        <!-- HEADER TITLE -->
+        <div class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-2xl p-6 mb-6 shadow-md text-center">
+            <span class="inline-block bg-blue-500/30 text-blue-100 text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-2">Semester 3 • Assessment</span>
+            <h1 class="text-2xl md:text-3xl font-bold">General Economic English Quiz</h1>
+            <p class="text-blue-100 text-sm mt-1">Topics: Scarcity, Micro/Macroeconomics, Consumers &amp; Producers</p>
+        </div>
+
+        <!-- STEP 1: REGISTRATION FORM -->
+        <div id="registration-card" class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+            <div class="border-b border-slate-100 pb-4 mb-6">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="fa-solid fa-user-pen text-blue-600 mr-2"></i> Student Registration
+                </h2>
+                <p class="text-slate-500 text-sm mt-1">Please enter your official details before starting the 3-minute timed quiz.</p>
+            </div>
+
+            <form id="student-form" onsubmit="startQuiz(event)" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">First Name / الاسم</label>
+                        <input type="text" id="first-name" required placeholder="e.g. Mohamed" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Last Name / اللقب</label>
+                        <input type="text" id="last-name" required placeholder="e.g. Benali" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address / البريد الإلكتروني</label>
+                    <input type="email" id="student-email" required placeholder="student@univ-boumerdes.dz" class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Group / الفوج</label>
+                    <select id="student-group" required class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white">
+                        <option value="" disabled selected>Select your Group...</option>
+                        <option value="G06">Group 06 (G06)</option>
+                        <option value="G07">Group 07 (G07)</option>
+                        <option value="G08">Group 08 (G08)</option>
+                        <option value="G09">Group 09 (G09)</option>
+                        <option value="G10">Group 10 (G10)</option>
+                    </select>
+                </div>
+
+                <!-- Instructions Alert Box -->
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mt-6">
+                    <div class="flex">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mr-3 mt-0.5"></i>
+                        <div class="text-xs text-amber-800 space-y-1">
+                            <p class="font-bold">Instructions &amp; Rules:</p>
+                            <p>• You have <strong>3 minutes (180 seconds)</strong> to complete 20 True/False questions.</p>
+                            <p>• The quiz will automatically submit when time expires!</p>
+                            <p>• Make sure to choose an answer for every question.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base mt-6">
+                    <span>Start Timed Quiz Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: QUIZ SECTION (HIDDEN BY DEFAULT) -->
+        <div id="quiz-card" class="hidden space-y-6">
+            <form id="quiz-form" onsubmit="submitQuiz(event)">
+                <div id="questions-container" class="space-y-4">
+                    <!-- Dynamic Questions Loaded Here -->
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Submit Answers</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- STEP 3: RESULTS CARD (HIDDEN BY DEFAULT) -->
+        <div id="results-card" class="hidden bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-md text-center">
+            <div id="result-icon-container" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                <!-- Icon inserted via JS -->
+            </div>
+
+            <h2 id="result-status" class="text-2xl font-bold text-slate-800 mb-1">Quiz Completed!</h2>
+            <p id="result-student-info" class="text-slate-500 text-sm mb-6">Submitted by Student</p>
+
+            <!-- Score Display -->
+            <div class="bg-slate-50 rounded-xl border border-slate-100 p-6 mb-6 max-w-sm mx-auto">
+                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Score</span>
+                <div class="text-4xl font-extrabold text-blue-600 mt-1 mb-2" id="score-text">0 / 20</div>
+                <div class="text-sm font-semibold text-slate-600" id="percentage-text">0%</div>
+            </div>
+
+            <!-- Detailed Breakdown -->
+            <div id="result-details" class="text-left bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2 mb-6">
+                <!-- Data populated by JS -->
+            </div>
+
+            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold py-2.5 px-5 rounded-lg shadow inline-flex items-center space-x-2">
+                <i class="fa-solid fa-print"></i>
+                <span>Print or Save Result</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // 20 True/False Questions dataset aligned with A1/A2 level syllabus
+        const questionsData = [
+            { id: 1, text: "Economics is about choices when resources are limited.", answer: "True" },
+            { id: 2, text: "Economy and economics mean exactly the same thing.", answer: "False" },
+            { id: 3, text: "'Economic' is an adjective.", answer: "True" },
+            { id: 4, text: "Microeconomics studies the economy as a whole.", answer: "False" },
+            { id: 5, text: "Macroeconomics looks at inflation and unemployment.", answer: "True" },
+            { id: 6, text: "The Algerian economy is considered a developing economy.", answer: "True" },
+            { id: 7, text: "Scarcity means that resources are unlimited.", answer: "False" },
+            { id: 8, text: "A consumer buys food and goods from a shop.", answer: "True" },
+            { id: 9, text: "A producer makes goods or provides services for consumers.", answer: "True" },
+            { id: 10, text: "Economics, business, and management are exactly the same field.", answer: "False" },
+            { id: 11, text: "English helps you communicate with business partners from other countries.", answer: "True" },
+            { id: 12, text: "Scarcity means that society can have everything it wants for free.", answer: "False" },
+            { id: 13, text: "Microeconomics looks at individual markets and individual consumers.", answer: "True" },
+            { id: 14, text: "Resources are things that people, businesses, or countries can use.", answer: "True" },
+            { id: 15, text: "A consumer is a person who manufactures industrial goods.", answer: "False" },
+            { id: 16, text: "Producers can be individuals, private companies, or government enterprises.", answer: "True" },
+            { id: 17, text: "English is only a general school subject, not a practical tool for economics.", answer: "False" },
+            { id: 18, text: "Economics studies how resources are allocated and used.", answer: "True" },
+            { id: 19, text: "Business management focuses on organizing people and resources within an organization.", answer: "True" },
+            { id: 20, text: "Management is strictly limited to producing agricultural products.", answer: "False" }
+        ];
+
+        let studentDetails = {};
+        let timerInterval = null;
+        let totalSeconds = 180; // 3 Minutes (180 seconds)
+        let isSubmitted = false;
+
+        function renderQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+
+            questionsData.forEach((q, index) => {
+                const qCard = document.createElement("div");
+                qCard.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm";
+                qCard.innerHTML = `
+                    <div class="flex items-start space-x-3 mb-3">
+                        <span class="flex-shrink-0 bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-md">Q${index + 1}</span>
+                        <p class="font-medium text-slate-800 text-sm md:text-base">${q.text}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
+                            <input type="radio" name="q_${q.id}" value="True" required class="accent-blue-600 h-4 w-4">
+                            <span class="text-sm font-medium text-slate-700">True</span>
+                        </label>
+                        <label class="quiz-option cursor-pointer border border-slate-200 rounded-lg p-3 flex items-center justify-center space-x-2">
+                            <input type="radio" name="q_${q.id}" value="False" required class="accent-blue-600 h-4 w-4">
+                            <span class="text-sm font-medium text-slate-700">False</span>
+                        </label>
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+        }
+
+        // Start Quiz Function
+        function startQuiz(e) {
+            e.preventDefault();
+
+            // Store student details
+            studentDetails = {
+                firstName: document.getElementById("first-name").value.trim(),
+                lastName: document.getElementById("last-name").value.trim(),
+                email: document.getElementById("student-email").value.trim(),
+                group: document.getElementById("student-group").value
+            };
+
+            // Update Header Display
+            document.getElementById("display-student-name").textContent = `${studentDetails.firstName} ${studentDetails.lastName}`;
+            document.getElementById("display-student-group").textContent = studentDetails.group;
+
+            // UI Transitions
+            document.getElementById("registration-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.remove("hidden");
+            
+            renderQuestions();
+            document.getElementById("quiz-card").classList.remove("hidden");
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Start Countdown Timer
+            startTimer();
+        }
+
+        function startTimer() {
+            const timeDisplay = document.getElementById("time-display");
+            const timerBadge = document.getElementById("timer-badge");
+
+            timerInterval = setInterval(() => {
+                totalSeconds--;
+
+                let minutes = Math.floor(totalSeconds / 60);
+                let seconds = totalSeconds % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timeDisplay.textContent = `${minutes}:${seconds}`;
+
+                // Warning colors when under 1 minute
+                if (totalSeconds <= 60) {
+                    timerBadge.classList.remove("bg-red-50", "text-red-700");
+                    timerBadge.classList.add("bg-red-600", "text-white", "animate-pulse");
+                }
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ Time is up! Your quiz is automatically being submitted.");
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function submitQuiz(e) {
+            if (e) e.preventDefault();
+            if (isSubmitted) return;
+            isSubmitted = true;
+
+            clearInterval(timerInterval);
+
+            // Calculate Score
+            let score = 0;
+            const totalQuestions = questionsData.length;
+
+            questionsData.forEach((q) => {
+                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                if (selected && selected.value === q.answer) {
+                    score++;
+                }
+            });
+
+            const percentage = Math.round((score / totalQuestions) * 100);
+
+            // Hide Quiz, Show Results
+            document.getElementById("quiz-card").classList.add("hidden");
+            document.getElementById("sticky-header").classList.add("hidden");
+            document.getElementById("results-card").classList.remove("hidden");
+
+            // Update Result Display
+            document.getElementById("score-text").textContent = `${score} / ${totalQuestions}`;
+            document.getElementById("percentage-text").textContent = `Score Percentage: ${percentage}%`;
+            document.getElementById("result-student-info").textContent = `Student: ${studentDetails.firstName} ${studentDetails.lastName} (${studentDetails.group}) • ${studentDetails.email}`;
+
+            const iconContainer = document.getElementById("result-icon-container");
+            const statusTitle = document.getElementById("result-status");
+
+            if (percentage >= 50) {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-emerald-100 text-emerald-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-trophy text-3xl"></i>`;
+                statusTitle.textContent = "Congratulations! You Passed";
+            } else {
+                iconContainer.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 bg-red-100 text-red-600";
+                iconContainer.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-3xl"></i>`;
+                statusTitle.textContent = "Keep Practicing!";
+            }
+
+            // Breakdown
+            const resultDetails = document.getElementById("result-details");
+            resultDetails.innerHTML = `
+                <div class="flex justify-between"><strong>First Name:</strong> <span>${studentDetails.firstName}</span></div>
+                <div class="flex justify-between"><strong>Last Name:</strong> <span>${studentDetails.lastName}</span></div>
+                <div class="flex justify-between"><strong>Email:</strong> <span>${studentDetails.email}</span></div>
+                <div class="flex justify-between"><strong>Group:</strong> <span>${studentDetails.group}</span></div>
+                <div class="flex justify-between border-t border-slate-200 pt-1 mt-1"><strong>Time Used:</strong> <span>${180 - Math.max(0, totalSeconds)} seconds</span></div>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
