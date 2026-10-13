@@ -1,5 +1,4 @@
-
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
         }
-        /* Custom radio button animations */
         .quiz-option {
             transition: all 0.2s ease;
         }
@@ -27,7 +25,6 @@
             font-weight: 600;
             color: #1d4ed8;
         }
-        /* Sticky Timer Bar */
         .sticky-timer {
             position: sticky;
             top: 0;
@@ -102,7 +99,6 @@
                     </select>
                 </div>
 
-                <!-- Instructions Alert Box -->
                 <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mt-6">
                     <div class="flex">
                         <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mr-3 mt-0.5"></i>
@@ -122,40 +118,37 @@
             </form>
         </div>
 
-        <!-- STEP 2: QUIZ SECTION (HIDDEN BY DEFAULT) -->
+        <!-- STEP 2: QUIZ SECTION -->
         <div id="quiz-card" class="hidden space-y-6">
             <form id="quiz-form" onsubmit="submitQuiz(event)">
                 <div id="questions-container" class="space-y-4">
-                    <!-- Dynamic Questions Loaded Here -->
+                    <!-- Dynamic Questions -->
                 </div>
 
-                <!-- Submit Button -->
                 <div class="mt-8">
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base">
+                    <button id="submit-btn" type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-base">
                         <i class="fa-solid fa-paper-plane"></i>
-                        <span>Submit Answers</span>
+                        <span id="submit-btn-text">Submit Answers</span>
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- STEP 3: RESULTS CARD (HIDDEN BY DEFAULT) -->
+        <!-- STEP 3: RESULTS CARD -->
         <div id="results-card" class="hidden bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-md text-center">
             <div id="result-icon-container" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
-                <!-- Icon inserted via JS -->
+                <!-- Icon via JS -->
             </div>
 
             <h2 id="result-status" class="text-2xl font-bold text-slate-800 mb-1">Quiz Completed!</h2>
             <p id="result-student-info" class="text-slate-500 text-sm mb-6">Submitted by Student</p>
 
-            <!-- Score Display -->
             <div class="bg-slate-50 rounded-xl border border-slate-100 p-6 mb-6 max-w-sm mx-auto">
                 <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Your Final Score</span>
                 <div class="text-4xl font-extrabold text-blue-600 mt-1 mb-2" id="score-text">0 / 20</div>
                 <div class="text-sm font-semibold text-slate-600" id="percentage-text">0%</div>
             </div>
 
-            <!-- Detailed Breakdown -->
             <div id="result-details" class="text-left bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2 mb-6">
                 <!-- Data populated by JS -->
             </div>
@@ -278,12 +271,18 @@
             }, 1000);
         }
 
-        function submitQuiz(e) {
+        async function submitQuiz(e) {
             if (e) e.preventDefault();
             if (isSubmitted) return;
             isSubmitted = true;
 
             clearInterval(timerInterval);
+
+            // إظهار جاري الإرسال
+            const submitBtn = document.getElementById("submit-btn");
+            const submitBtnText = document.getElementById("submit-btn-text");
+            submitBtn.disabled = true;
+            submitBtnText.textContent = "Submitting Data...";
 
             let score = 0;
             const totalQuestions = questionsData.length;
@@ -298,21 +297,27 @@
             const percentage = Math.round((score / totalQuestions) * 100);
             const timeUsed = 180 - Math.max(0, totalSeconds);
 
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify({
-                    firstName: studentDetails.firstName,
-                    lastName: studentDetails.lastName,
-                    email: studentDetails.email,
-                    group: studentDetails.group,
-                    score: score + " / " + totalQuestions,
-                    percentage: percentage + "%",
-                    timeUsed: timeUsed + " seconds"
-                })
-            }).catch(err => console.error("Error submitting data:", err));
+            // إرسال البيانات المباشرة
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        firstName: studentDetails.firstName,
+                        lastName: studentDetails.lastName,
+                        email: studentDetails.email,
+                        group: studentDetails.group,
+                        score: score + " / " + totalQuestions,
+                        percentage: percentage + "%",
+                        timeUsed: timeUsed + " seconds"
+                    })
+                });
+            } catch (err) {
+                console.error("Error submitting data:", err);
+            }
 
             document.getElementById("quiz-card").classList.add("hidden");
             document.getElementById("sticky-header").classList.add("hidden");
