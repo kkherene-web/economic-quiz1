@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Week 1 • Introduction to Economics</title>
+<style>
+:root{
+  --ink:#19323d; --muted:#647780; --teal:#176b78; --teal2:#238b92;
+  --mint:#eaf7f5; --cream:#fff8e7; --line:#dce9e8; --white:#ffffff;
+  --shadow:0 10px 30px rgba(25,50,61,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#f5f8f8;color:var(--ink);font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;line-height:1.65}
+main{max-width:980px;margin:auto;padding:22px 18px 40px}
+
+header{position:relative;overflow:hidden;background:linear-gradient(135deg,#123f4a 0%,#176b78 55%,#2a8b8c 100%);color:#fff;border-radius:26px;padding:34px 30px 30px;margin-bottom:18px;box-shadow:0 16px 40px rgba(23,107,120,.20)}
+header:after{content:"";position:absolute;width:210px;height:210px;right:-70px;top:-80px;border-radius:50%;background:rgba(255,255,255,.08)}
+header h1{position:relative;z-index:1;margin:0 0 8px;font-size:30px;line-height:1.2;letter-spacing:-.4px}
+header p{position:relative;z-index:1;margin:7px 0;color:#e9f6f6;font-size:15px}
+.badge{position:relative;z-index:1;display:inline-flex;align-items:center;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:999px;margin-top:12px;font-size:13px}
+
+.topic-nav{display:flex;gap:8px;flex-wrap:wrap;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:16px;padding:10px;margin:0 0 18px;position:sticky;top:8px;z-index:20;box-shadow:0 6px 20px rgba(25,50,61,.07)}
+.topic-nav a{text-decoration:none;color:var(--teal);background:#f0f7f6;border:1px solid #d7ebe8;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700}
+.topic-nav a:hover{background:var(--mint)}
+
+section{background:var(--white);border:1px solid #e2eceb;border-radius:22px;padding:25px;margin:18px 0;box-shadow:var(--shadow);scroll-margin-top:75px}
+section:before{content:"";display:block;width:48px;height:4px;border-radius:9px;background:linear-gradient(90deg,var(--teal),#72b8b2);margin-bottom:14px}
+.topic-label{display:inline-block;font-size:12px;color:var(--teal);background:var(--mint);border:1px solid #d6ebe8;padding:5px 10px;border-radius:999px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
+h2{margin:0 0 15px;color:#173f49;font-size:25px;line-height:1.25}
+h3{display:flex;align-items:center;gap:8px;color:#176b78;margin:20px 0 9px;font-size:18px}
+h3:before{content:"";width:7px;height:7px;border-radius:50%;background:#55a7a0}
+
+.note{background:linear-gradient(90deg,#edf8f7,#f8fbfb);border:1px solid #d9ecea;border-left:5px solid #2a8b8c;padding:12px 15px;border-radius:12px;margin:13px 0 18px;color:#405a62;font-size:14px}
+
+.line{display:flex;align-items:center;gap:10px;margin:8px 0;padding:8px 10px;border-radius:10px;transition:.15s ease}
+.line:hover{background:#f7faf9}
+.line>span{flex:1}
+
+.visual{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0 22px}
+.box{background:linear-gradient(180deg,#fbfdfd,#f1f8f7);border:1px solid #d6e7e5;border-radius:16px;padding:13px 17px;text-align:center;min-width:112px;box-shadow:0 4px 12px rgba(25,50,61,.05);font-weight:600}
+.arrow{font-size:23px;color:#2a8b8c;font-weight:700}
+
+.vocab{border:1px solid #deebe9;background:#fcfefe;border-radius:15px;padding:15px 16px;margin:10px 0}
+.word{font-weight:800;color:#176b78;font-size:20px;margin-bottom:6px}
+.ar{direction:rtl;text-align:right;color:#73848a;font-size:13px;margin:5px 0 8px}
+.definition{background:linear-gradient(135deg,#eef8f7,#f8fbfa);border:1px solid #cfe6e3;border-radius:15px;padding:17px;margin:14px 0;font-size:18px;color:#174b55;font-weight:700}
+.definition .ar{font-weight:normal}
+
+.key{background:linear-gradient(135deg,#fff9e7,#fffdf7);border:1px solid #f0dfad;border-left:5px solid #d7ae3c;padding:13px 15px;border-radius:12px;margin-top:16px}
+.key b{color:#8b6a12}
+
+.footer{text-align:center;color:#72838a;font-size:12px;padding:18px 8px 4px}
+
+@media(max-width:650px){
+  main{padding:12px}
+  header{padding:26px 20px;border-radius:20px}
+  header h1{font-size:25px}
+  section{padding:18px;border-radius:18px}
+  h2{font-size:22px}
+  .topic-nav{position:static}
+  .topic-nav a{font-size:12px;padding:6px 9px}
+  .visual{gap:6px}
+  .box{min-width:92px;padding:10px 11px}
+}
+
+/* Fixed Audio Button */
+.play-audio{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;padding:0;margin-left:8px;
+  border:1.5px solid #cfe6e3;border-radius:50%;
+  background:#e9f6f4;color:#176b78;cursor:pointer;
+  font-size:13px;line-height:1;flex:none;
+  transition:.15s ease;vertical-align:middle;
+}
+.play-audio:hover{background:#dff1ef;transform:scale(1.08)}
+.play-audio.playing{background:#176b78;color:#fff;border-color:#176b78}
+</style>
+</head>
+<body>
+<main>
+
+<div style="font-size:12px;color:#647780;margin:8px 0;padding:10px;background:#eaf7f5;border-radius:10px;text-align:center;">
+  🔊 Click the ▶ button next to any line to listen. · اضغط على زر ▶ للاستماع
+</div>
+
+<header>
+<h1>Week 1: Introduction to Economics and Economic English</h1>
+<p>Presentation Stage • Topics 1–5</p>
+<span class="badge">⏱ About 10–12 minutes</span>
+</header>
+
+<nav aria-label="Week 1 topics" class="topic-nav">
+<a href="#topic1">1 · Economics</a>
+<a href="#topic2">2 · English</a>
+<a href="#topic3">3 · Business</a>
+<a href="#topic4">4 · Economy Words</a>
+<a href="#topic5">5 · Micro &amp; Macro</a>
+</nav>
+
+<!-- ========== TOPIC 1 ========== -->
+<section id="topic1">
+<div class="topic-label">Topic 1 • What is Economics?</div>
+<h2>A Simple Economic Situation</h2>
+<div class="note">Start with a familiar situation. Listen to the sentences and follow the idea.</div>
+
+<div class="visual">
+<div class="box">👤<br/>Person</div><div class="arrow">→</div>
+<div class="box">💰<br/>Limited money</div><div class="arrow">→</div>
+<div class="box">🛒<br/>Many wants</div><div class="arrow">→</div>
+<div class="box">☑️<br/>Choice</div>
+</div>
+
+<div class="line"><span>Imagine that you have 1,000 dinars.</span><button class="play-audio" type="button" data-speak="Imagine that you have 1,000 dinars.">▶</button></div>
+<div class="line"><span>You want to buy food, a book, and a new phone.</span><button class="play-audio" type="button" data-speak="You want to buy food, a book, and a new phone.">▶</button></div>
+<div class="line"><span>But you cannot buy everything.</span><button class="play-audio" type="button" data-speak="But you cannot buy everything.">▶</button></div>
+<div class="line"><span>Your money is limited, so you must make a choice.</span><button class="play-audio" type="button" data-speak="Your money is limited, so you must make a choice.">▶</button></div>
+<div class="line"><span>This is an economic situation.</span><button class="play-audio" type="button" data-speak="This is an economic situation.">▶</button></div>
+
+<div class="key"><b>Key idea</b>
+<div class="line"><span>Economics is about choices when resources are limited.</span><button class="play-audio" type="button" data-speak="Economics is about choices when resources are limited.">▶</button></div></div>
+
+<div class="vocab">
+<div class="word">Resources <button class="play-audio" type="button" data-speak="Resources">▶</button></div>
+<div><b>Simple meaning:</b> things that people, businesses, or countries can use <button class="play-audio" type="button" data-speak="things that people, businesses, or countries can use">▶</button></div>
+<div><b>Example:</b> Money, time, workers, and natural resources are important resources. <button class="play-audio" type="button" data-speak="Money, time, workers, and natural resources are important resources.">▶</button></div>
+<div class="ar">الموارد</div>
+</div>
+
+<div class="vocab">
+<div class="word">Scarcity <button class="play-audio" type="button" data-speak="Scarcity">▶</button></div>
+<div><b>Simple meaning:</b> a situation where resources are limited <button class="play-audio" type="button" data-speak="a situation where resources are limited">▶</button></div>
+<div><b>Example:</b> Scarcity means that we cannot have everything we want. <button class="play-audio" type="button" data-speak="Scarcity means that we cannot have everything we want.">▶</button></div>
+<div class="ar">الندرة</div>
+</div>
+
+<div class="vocab">
+<div class="word">Consumer <button class="play-audio" type="button" data-speak="Consumer">▶</button></div>
+<div><b>Simple meaning:</b> a person who buys or uses goods and services <button class="play-audio" type="button" data-speak="a person who buys or uses goods and services">▶</button></div>
+<div><b>Example:</b> A consumer buys food from a shop. <button class="play-audio" type="button" data-speak="A consumer buys food from a shop.">▶</button></div>
+<div class="ar">المستهلك</div>
+</div>
+
+<div class="vocab">
+<div class="word">Producer <button class="play-audio" type="button" data-speak="Producer">▶</button></div>
+<div><b>Simple meaning:</b> a person or company that makes goods or provides services <button class="play-audio" type="button" data-speak="a person or company that makes goods or provides services">▶</button></div>
+<div><b>Example:</b> A producer makes products for consumers. <button class="play-audio" type="button" data-speak="A producer makes products for consumers.">▶</button></div>
+<div class="ar">المنتِج</div>
+</div>
+
+<div class="definition">
+Economics is the study of how people and organizations use limited resources to make choices.
+<button class="play-audio" type="button" data-speak="Economics is the study of how people and organizations use limited resources to make choices.">▶</button>
+<div class="ar">الاقتصاد هو دراسة كيفية استخدام الناس والمنظمات للموارد المحدودة لاتخاذ الخيارات.</div>
+</div>
+</section>
+
+<!-- ========== TOPIC 2 ========== -->
+<section id="topic2">
+<div class="topic-label">Topic 2 • Why Is English Important?</div>
+<h2>English in Economics and Business: Three Reasons</h2>
+<div class="note">English is presented through a future situation.</div>
+
+<h3>1. Read</h3>
+<div class="line"><span>English helps you read economic news and business information.</span><button class="play-audio" type="button" data-speak="English helps you read economic news and business information.">▶</button></div>
+<div class="line"><span>You can read reports, articles, and information about companies.</span><button class="play-audio" type="button" data-speak="You can read reports, articles, and information about companies.">▶</button></div>
+<div class="line"><span>You can learn about economic events in different countries.</span><button class="play-audio" type="button" data-speak="You can learn about economic events in different countries.">▶</button></div>
+
+<h3>2. Communicate</h3>
+<div class="line"><span>English helps you communicate with people from other countries.</span><button class="play-audio" type="button" data-speak="English helps you communicate with people from other countries.">▶</button></div>
+<div class="line"><span>You may write emails, talk to customers, or work with international companies.</span><button class="play-audio" type="button" data-speak="You may write emails, talk to customers, or work with international companies.">▶</button></div>
+<div class="line"><span>English can be useful in academic and professional situations.</span><button class="play-audio" type="button" data-speak="English can be useful in academic and professional situations.">▶</button></div>
+
+<h3>3. Learn</h3>
+<div class="line"><span>English gives you access to more learning resources.</span><button class="play-audio" type="button" data-speak="English gives you access to more learning resources.">▶</button></div>
+<div class="line"><span>You can watch economic videos and use international websites.</span><button class="play-audio" type="button" data-speak="You can watch economic videos and use international websites.">▶</button></div>
+<div class="line"><span>You can continue learning about economics and business in English.</span><button class="play-audio" type="button" data-speak="You can continue learning about economics and business in English.">▶</button></div>
+
+<div class="key">
+<div class="line"><span>English is not only a language subject. It is also a tool for studying, communicating, and working in economics and business.</span><button class="play-audio" type="button" data-speak="English is not only a language subject. It is also a tool for studying, communicating, and working in economics and business.">▶</button></div>
+</div>
+</section>
+
+<!-- ========== TOPIC 3 ========== -->
+<section id="topic3">
+<div class="topic-label">Topic 3 • Economics, Business and Management</div>
+<h2>One Company, Three Perspectives</h2>
+<div class="note">We use one simple company to understand the difference between the three fields.</div>
+
+<div class="visual">
+<div class="box">🏭<br/><b>A company</b><br/>makes products</div>
+</div>
+
+<h3>Economics</h3>
+<div class="line"><span>Economics looks at how resources are used.</span><button class="play-audio" type="button" data-speak="Economics looks at how resources are used.">▶</button></div>
+<div class="line"><span>The company has limited money, workers, materials, and time.</span><button class="play-audio" type="button" data-speak="The company has limited money, workers, materials, and time.">▶</button></div>
+<div class="line"><span>Economics asks: How can these resources be used?</span><button class="play-audio" type="button" data-speak="Economics asks: How can these resources be used?">▶</button></div>
+
+<h3>Business</h3>
+<div class="line"><span>Business is about producing and selling goods or services.</span><button class="play-audio" type="button" data-speak="Business is about producing and selling goods or services.">▶</button></div>
+<div class="line"><span>The company makes products and sells them to customers.</span><button class="play-audio" type="button" data-speak="The company makes products and sells them to customers.">▶</button></div>
+<div class="line"><span>Business asks: What can the company produce and sell?</span><button class="play-audio" type="button" data-speak="Business asks: What can the company produce and sell?">▶</button></div>
+
+<h3>Management</h3>
+<div class="line"><span>Management is about planning and organizing people and resources.</span><button class="play-audio" type="button" data-speak="Management is about planning and organizing people and resources.">▶</button></div>
+<div class="line"><span>Managers plan work and organize employees and resources.</span><button class="play-audio" type="button" data-speak="Managers plan work and organize employees and resources.">▶</button></div>
+<div class="line"><span>Management asks: How can we organize the company?</span><button class="play-audio" type="button" data-speak="Management asks: How can we organize the company?">▶</button></div>
+
+<div class="key">
+<div class="line"><span>Economics studies resource use. Business focuses on producing and selling. Management focuses on organizing people and resources.</span><button class="play-audio" type="button" data-speak="Economics studies resource use. Business focuses on producing and selling. Management focuses on organizing people and resources.">▶</button></div>
+</div>
+</section>
+
+<!-- ========== TOPIC 4 ========== -->
+<section id="topic4">
+<div class="topic-label">Topic 4 • Economy, Economics and Economic</div>
+<h2>Three Similar Words</h2>
+<div class="note">These words look similar, but they have different grammatical roles and meanings.</div>
+
+<div class="vocab">
+<div class="word">Economy <button class="play-audio" type="button" data-speak="Economy">▶</button></div>
+<div class="line"><span>The economy is the economic system or activity of a country.</span><button class="play-audio" type="button" data-speak="The economy is the economic system or activity of a country.">▶</button></div>
+<div class="ar">الاقتصاد / النظام الاقتصادي</div>
+</div>
+
+<div class="vocab">
+<div class="word">Economics <button class="play-audio" type="button" data-speak="Economics">▶</button></div>
+<div class="line"><span>Economics is the study of how resources are used.</span><button class="play-audio" type="button" data-speak="Economics is the study of how resources are used.">▶</button></div>
+<div class="ar">علم الاقتصاد</div>
+</div>
+
+<div class="vocab">
+<div class="word">Economic <button class="play-audio" type="button" data-speak="Economic">▶</button></div>
+<div class="line"><span>Economic is an adjective. It describes something related to the economy or economics.</span><button class="play-audio" type="button" data-speak="Economic is an adjective. It describes something related to the economy or economics.">▶</button></div>
+<div class="ar">اقتصادي</div>
+</div>
+
+<div class="key">
+<div class="line"><span>The Algerian economy is developing.</span><button class="play-audio" type="button" data-speak="The Algerian economy is developing.">▶</button></div>
+<div class="line"><span>I study economics.</span><button class="play-audio" type="button" data-speak="I study economics.">▶</button></div>
+<div class="line"><span>This is an economic problem.</span><button class="play-audio" type="button" data-speak="This is an economic problem.">▶</button></div>
+</div>
+</section>
+
+<!-- ========== TOPIC 5 ========== -->
+<section id="topic5">
+<div class="topic-label">Topic 5 • Microeconomics and Macroeconomics</div>
+<h2>Zoom In — Zoom Out</h2>
+<div class="note">Think of economics like a camera. Microeconomics zooms in. Macroeconomics zooms out.</div>
+
+<div class="visual">
+<div class="box">🔍<br/><b>MICRO</b><br/>Small parts</div>
+<div class="arrow">↔</div>
+<div class="box">🌍<br/><b>MACRO</b><br/>Big picture</div>
+</div>
+
+<h3>Microeconomics — Zoom In</h3>
+<div class="line"><span>Microeconomics studies small parts of the economy.</span><button class="play-audio" type="button" data-speak="Microeconomics studies small parts of the economy.">▶</button></div>
+<div class="line"><span>It looks at consumers, businesses, products, prices, and markets.</span><button class="play-audio" type="button" data-speak="It looks at consumers, businesses, products, prices, and markets.">▶</button></div>
+<div class="line"><span>For example, it can study why the price of one product changes.</span><button class="play-audio" type="button" data-speak="For example, it can study why the price of one product changes.">▶</button></div>
+
+<h3>Macroeconomics — Zoom Out</h3>
+<div class="line"><span>Macroeconomics studies the economy as a whole.</span><button class="play-audio" type="button" data-speak="Macroeconomics studies the economy as a whole.">▶</button></div>
+<div class="line"><span>It looks at inflation, unemployment, economic growth, and the national economy.</span><button class="play-audio" type="button" data-speak="It looks at inflation, unemployment, economic growth, and the national economy.">▶</button></div>
+<div class="line"><span>For example, it can study why prices are increasing in a country.</span><button class="play-audio" type="button" data-speak="For example, it can study why prices are increasing in a country.">▶</button></div>
+
+<div class="key">
+<div class="line"><span>Microeconomics looks at smaller parts of the economy. Macroeconomics looks at the economy as a whole.</span><button class="play-audio" type="button" data-speak="Microeconomics looks at smaller parts of the economy. Macroeconomics looks at the economy as a whole.">▶</button></div>
+</div>
+</section>
+
+<!-- ========== SUMMARY ========== -->
+<section>
+<div class="topic-label">End of the presentation</div>
+<h2>What Have We Seen?</h2>
+<div class="line"><span>Economics is about choices and limited resources.</span><button class="play-audio" type="button" data-speak="Economics is about choices and limited resources.">▶</button></div>
+<div class="line"><span>English is useful for reading, communicating, and learning.</span><button class="play-audio" type="button" data-speak="English is useful for reading, communicating, and learning.">▶</button></div>
+<div class="line"><span>Economics, business, and management look at economic activity from different perspectives.</span><button class="play-audio" type="button" data-speak="Economics, business, and management look at economic activity from different perspectives.">▶</button></div>
+<div class="line"><span>Economy, economics, and economic are related but different words.</span><button class="play-audio" type="button" data-speak="Economy, economics, and economic are related but different words.">▶</button></div>
+<div class="line"><span>Microeconomics looks at smaller parts, while macroeconomics looks at the whole economy.</span><button class="play-audio" type="button" data-speak="Microeconomics looks at smaller parts, while macroeconomics looks at the whole economy.">▶</button></div>
+<div class="note"><b>Next stage:</b> Practice activities can now follow this presentation.</div>
+</section>
+
+<div class="footer">General Economic English • Week 1 • Presentation Stage</div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // Check speech synthesis support
+  if (!('speechSynthesis' in window)) {
+    alert("Sorry, your browser does not support speech synthesis. Please use Chrome, Edge, or Firefox.");
+    return;
+  }
+
+  let currentButton = null;
+  let voices = [];
+
+  // Load voices (they load asynchronously in some browsers)
+  function loadVoices(){
+    voices = window.speechSynthesis.getVoices();
+  }
+  loadVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+
+  // Find best English voice
+  function getEnglishVoice(){
+    // Prefer US English
+    let v = voices.find(x => x.lang === 'en-US');
+    if (v) return v;
+    v = voices.find(x => x.lang === 'en-GB');
+    if (v) return v;
+    v = voices.find(x => x.lang && x.lang.startsWith('en'));
+    if (v) return v;
+    return null;
+  }
+
+  // Click handler
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.play-audio');
+    if (!btn) return;
+
+    const text = btn.getAttribute('data-speak');
+    if (!text || text.trim() === '') {
+      console.warn('No text to speak');
+      return;
+    }
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    // Toggle off if clicking the same button
+    if (currentButton === btn) {
+      btn.classList.remove('playing');
+      currentButton = null;
+      return;
+    }
+
+    // Remove playing class from previous button
+    if (currentButton) {
+      currentButton.classList.remove('playing');
+    }
+
+    // Mark new button as playing
+    currentButton = btn;
+    btn.classList.add('playing');
+
+    // Create utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    const voice = getEnglishVoice();
+    if (voice) utterance.voice = voice;
+
+    // Handle end
+    utterance.onend = function() {
+      btn.classList.remove('playing');
+      if (currentButton === btn) currentButton = null;
+    };
+
+    // Handle error
+    utterance.onerror = function(ev) {
+      console.error('Speech error:', ev);
+      btn.classList.remove('playing');
+      if (currentButton === btn) currentButton = null;
+    };
+
+    // Speak
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.error('Speech exception:', err);
+      btn.classList.remove('playing');
+      currentButton = null;
+    }
+  });
+
+  // Optional: warm up voices on first user interaction (fixes some Chrome issues)
+  document.addEventListener('click', function warmup(){
+    if (voices.length === 0) loadVoices();
+    // Speak a silent utterance to unlock speech in some browsers
+    if (window.speechSynthesis && !window._speechWarmed) {
+      window._speechWarmed = true;
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    }
+    document.removeEventListener('click', warmup);
+  }, { once: false });
+
+})();
+</script>
+
+</body>
+</html>
