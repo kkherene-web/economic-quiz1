@@ -10,7 +10,6 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
     .opt-label:hover { background-color: #f1f5f9; }
-    input[type="radio"]:checked + span { font-weight: 600; color: #0284c7; }
   </style>
 </head>
 <body class="py-8 px-4 sm:px-6 lg:px-8">
@@ -32,14 +31,10 @@
       <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
         <i class="fa-solid fa-id-card text-sky-600"></i> Student Information
       </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Full Name *</label>
           <input type="text" id="stdName" required placeholder="e.g. Ahmed Ali" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none text-sm" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Student ID *</label>
-          <input type="text" id="stdId" required placeholder="e.g. 20263102" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:outline-none text-sm" />
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Group *</label>
@@ -49,12 +44,12 @@
     </div>
 
     <!-- Quiz Form -->
-    <form id="quizForm" class="space-y-6">
+    <form id="quizForm" class="space-y-6" onsubmit="return false;">
       <div id="questionsContainer" class="space-y-6"></div>
 
       <!-- Submit Section -->
       <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 text-center space-y-3">
-        <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mx-auto">
+        <button type="button" id="submitBtn" onclick="submitHomework()" class="w-full sm:w-auto px-8 py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mx-auto">
           <i class="fa-solid fa-paper-plane"></i> Submit Homework
         </button>
         <div id="statusMessage" class="hidden text-sm font-medium"></div>
@@ -98,7 +93,7 @@
       
       let optionsHTML = item.options.map((opt, oIdx) => `
         <label class="opt-label flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer transition-colors">
-          <input type="radio" name="q${index}" value="${oIdx}" required class="w-4 h-4 text-sky-600 focus:ring-sky-500">
+          <input type="radio" name="q${index}" value="${oIdx}" class="w-4 h-4 text-sky-600 focus:ring-sky-500">
           <span class="text-sm text-slate-700">${opt}</span>
         </label>
       `).join('');
@@ -126,18 +121,14 @@
       }
     }
 
-    // Handle Submission
-    document.getElementById('quizForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
+    async function submitHomework() {
       const name = document.getElementById('stdName').value.trim();
-      const studentId = document.getElementById('stdId').value.trim();
       const group = document.getElementById('stdGroup').value.trim();
       const submitBtn = document.getElementById('submitBtn');
       const statusMsg = document.getElementById('statusMessage');
 
-      if (!name || !studentId || !group) {
-        alert("Please fill in your Student Details first!");
+      if (!name || !group) {
+        alert("Please enter both your Full Name and Group at the top before submitting!");
         return;
       }
 
@@ -162,7 +153,31 @@
       const payload = {
         timestamp: timestamp,
         name: name,
-        studentId: studentId,
+        studentId: "N/A",
         group: group,
         score: `${score}/${quizData.length}`,
         percentage: percentage,
+        answers: rawAnswers.join(', ')
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        statusMsg.className = "text-sm text-emerald-600 font-bold block";
+        statusMsg.textContent = "✅ Homework submitted successfully! Your results have been recorded.";
+        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Submitted Successfully`;
+      } catch (err) {
+        statusMsg.className = "text-sm text-rose-600 font-bold block";
+        statusMsg.textContent = "❌ Submission failed. Please try again.";
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Try Submitting Again`;
+      }
+    }
+  </script>
+</body>
+</html>
