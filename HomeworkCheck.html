@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+      <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -10,6 +11,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
     .opt-label:hover { background-color: #f1f5f9; }
+    .correct-opt { background-color: #dcfce7 !important; border-color: #22c55e !important; font-weight: 600; color: #15803d; }
+    .wrong-opt { background-color: #fee2e2 !important; border-color: #ef4444 !important; font-weight: 600; color: #b91c1c; }
   </style>
 </head>
 <body class="py-8 px-4 sm:px-6 lg:px-8">
@@ -23,7 +26,7 @@
         <span class="text-sm font-bold uppercase tracking-wider">General Economic English</span>
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Homework Check — Week 1</h1>
-      <p class="text-slate-600 text-sm mt-1">Complete all 20 questions below and click <b>Submit Homework</b> to send your results.</p>
+      <p class="text-slate-600 text-sm mt-1">Complete all 20 questions below and click <b>Submit Homework</b> to view your results.</p>
     </div>
 
     <!-- Student Details Form -->
@@ -52,6 +55,26 @@
           </select>
         </div>
       </div>
+    </div>
+
+    <!-- Results Banner (Initially Hidden) -->
+    <div id="resultsBanner" class="hidden bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-sky-200 text-center space-y-3 transition-all">
+      <div class="text-4xl" id="resultIcon">🎉</div>
+      <h2 class="text-2xl font-bold text-slate-900" id="resultTitle">Homework Submitted!</h2>
+      <p class="text-slate-600 text-sm" id="resultSubtitle">Here is your score performance breakdown:</p>
+      
+      <div class="inline-flex items-center justify-center gap-6 bg-slate-50 px-6 py-4 rounded-xl border border-slate-200 mt-2">
+        <div>
+          <div class="text-xs font-bold text-slate-500 uppercase">Score</div>
+          <div class="text-2xl font-extrabold text-sky-600" id="scoreDisplay">0/20</div>
+        </div>
+        <div class="h-8 w-px bg-slate-300"></div>
+        <div>
+          <div class="text-xs font-bold text-slate-500 uppercase">Percentage</div>
+          <div class="text-2xl font-extrabold text-emerald-600" id="percentDisplay">0%</div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 italic mt-2">Scroll down to review the detailed answers for each question.</p>
     </div>
 
     <!-- Quiz Form -->
@@ -100,10 +123,11 @@
     // Render questions
     quizData.forEach((item, index) => {
       const qCard = document.createElement('div');
+      qCard.id = `qCard_${index}`;
       qCard.className = "bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4";
       
       let optionsHTML = item.options.map((opt, oIdx) => `
-        <label class="opt-label flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer transition-colors">
+        <label id="optLabel_${index}_${oIdx}" class="opt-label flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer transition-colors">
           <input type="radio" name="q${index}" value="${oIdx}" class="w-4 h-4 text-sky-600 focus:ring-sky-500">
           <span class="text-sm text-slate-700">${opt}</span>
         </label>
@@ -119,6 +143,7 @@
           </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${optionsHTML}</div>
+        <div id="feedback_${index}" class="hidden text-xs font-semibold mt-2"></div>
       `;
       container.appendChild(qCard);
     });
@@ -145,23 +170,54 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending Homework...`;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Calculating Results...`;
       statusMsg.className = "text-sm text-sky-600 font-medium block";
-      statusMsg.textContent = "Submitting your homework to the professor...";
+      statusMsg.textContent = "Submitting your responses and scoring...";
 
       let score = 0;
       let rawAnswers = [];
 
+      // Grade and highlight questions
       quizData.forEach((item, index) => {
         const selected = document.querySelector(`input[name="q${index}"]:checked`);
         const userVal = selected ? parseInt(selected.value) : -1;
-        if (userVal === item.ans) score++;
-        rawAnswers.push(`Q${index+1}: ${userVal === item.ans ? 'Correct' : 'Wrong'}`);
+        const correctLabel = document.getElementById(`optLabel_${index}_${item.ans}`);
+        const feedbackDiv = document.getElementById(`feedback_${index}`);
+
+        // Disable inputs after submit
+        const inputs = document.querySelectorAll(`input[name="q${index}"]`);
+        inputs.forEach(i => i.disabled = true);
+
+        if (userVal === item.ans) {
+          score++;
+          correctLabel.classList.add('correct-opt');
+          feedbackDiv.className = "text-xs font-bold text-emerald-600 block";
+          feedbackDiv.innerHTML = "✓ Correct Answer!";
+          rawAnswers.push(`Q${index+1}: Correct`);
+        } else {
+          if (userVal !== -1) {
+            const wrongLabel = document.getElementById(`optLabel_${index}_${userVal}`);
+            wrongLabel.classList.add('wrong-opt');
+          }
+          correctLabel.classList.add('correct-opt');
+          feedbackDiv.className = "text-xs font-bold text-rose-600 block";
+          feedbackDiv.innerHTML = `✗ Incorrect. Correct Answer: "${item.options[item.ans]}"`;
+          rawAnswers.push(`Q${index+1}: Wrong`);
+        }
       });
 
-      const percentage = `${((score / quizData.length) * 100).toFixed(0)}%`;
+      const percentageVal = ((score / quizData.length) * 100).toFixed(0);
+      const percentage = `${percentageVal}%`;
       const timestamp = new Date().toLocaleString('en-US');
       const fullName = `${firstName} ${lastName}`;
+
+      // Update Results Banner
+      document.getElementById('scoreDisplay').textContent = `${score}/${quizData.length}`;
+      document.getElementById('percentDisplay').textContent = percentage;
+      
+      const banner = document.getElementById('resultsBanner');
+      banner.classList.remove('hidden');
+      banner.scrollIntoView({ behavior: 'smooth' });
 
       const payload = {
         timestamp: timestamp,
@@ -182,13 +238,12 @@
         });
 
         statusMsg.className = "text-sm text-emerald-600 font-bold block";
-        statusMsg.textContent = "✅ Homework submitted successfully! Your results have been recorded.";
-        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Submitted Successfully`;
+        statusMsg.textContent = "✅ Results generated and recorded successfully!";
+        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Submitted & Scored`;
       } catch (err) {
-        statusMsg.className = "text-sm text-rose-600 font-bold block";
-        statusMsg.textContent = "❌ Submission failed. Please try again.";
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Try Submitting Again`;
+        statusMsg.className = "text-sm text-amber-600 font-bold block";
+        statusMsg.textContent = "⚠️ Results displayed above, but background sheet sync failed.";
+        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i> Scored`;
       }
     }
   </script>
